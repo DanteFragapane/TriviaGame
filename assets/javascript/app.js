@@ -6,40 +6,42 @@ let maxTime = 30 // Maximum amount of seconds given to answer a question
 let timer = maxTime // Actual timer count
 
 // Creating the question view
-const createView = function createView (title = '', question = '', options = ['']) {
+const createView = function createView(number = 0, question = '', options = ['']) {
   let div = $('<div>', {
     class: 'question'
   })
   div.append($('<h1>', {
-    text: title
+    text: 'Question ' + number
   }))
   div.append($('<h3>', {
     text: question
   }))
-  options.forEach(option => {
+  for (let i = 0; i < options.length; i++) {
+    let option = options[i]
     if (option.match(/:answer/)) {
       option = option.replace(':answer', '')
-      div.append($('<button>', {
+      div.append($('<input>', {
+        type: 'radio',
         text: option,
-        class: 'answerOption answer'
+        class: 'answerOption answer ',
+        name: number,
+        value: i
       }))
     } else {
-      div.append($('<button>', {
+      div.append($('<input>', {
+        type: 'radio',
         text: option,
-        class: 'answerOption'
+        class: 'answerOption ',
+        name: number,
+        value: i
       }))
     }
-  })
+  }
   return div
 }
 
-const updateView = function updateView (question = createView) {
-  updateTimer(maxTime)
-  $('#question').html(question)
-}
-
 // Start timer for question
-const startTimer = function startTimer (seconds = maxTime) {
+const startTimer = function startTimer(seconds = maxTime) {
   updateTimer(maxTime)
   let counter = setInterval(function () {
     updateTimer(--timer)
@@ -51,51 +53,36 @@ const startTimer = function startTimer (seconds = maxTime) {
   return [counter, timeout]
 }
 
-const updateTimer = function updateTimer (seconds = timer) {
+const updateTimer = function updateTimer(seconds = timer) {
   $('#timer').html(seconds + ' seconds left')
 }
 
 // Stops the timer and the timeout
-const stopTimer = function stopTimer ([counter, timeout]) {
+const stopTimer = function stopTimer([counter, timeout]) {
   clearInterval(counter)
   clearTimeout(timeout)
   timer = maxTime
 }
 
-// Advance to next question, return that question
-const nextQuestion = function nextQuestion (questionArray = [], currentQuestion = 0) {
-  currentQuestion = currentQuestion + 1
-  updateView(questionArray[currentQuestion])
-  startTimer(maxTime)
-}
-
-// This will actually run the game
-const questionTime = function () {
-  let [counter, timeout] = startTimer()
-  $('#question').on('click', '.answerOption', function (event) {
-    stopTimer([counter, timeout])
-    const classArray = $(this).attr('class').split(' ') // Get an array of classes for the clicked button
-    console.log(classArray)
-    if (classArray.includes('answer')) { // Checking if the clicked button is the answer
-      correct = correct + 1
-    } else wrong = wrong + 1
-
-    question = nextQuestion(questionArray, currentQuestion)
-  })
-}
-// Setting up the questions
-let question = createView // Create a temporary question variable equal to a default question view
-
-// ``createView`` takes three parameters, a title, the question, and an array of answer choices, with one needing a ':answer' suffix,
+// Settinng up the questions
+// ``createView`` takes three parameters: a question number, a title, the question, and an array of answer choices, with one needing a ':answer' suffix,
 // to program the answer in
-const question1 = createView('Question 1', 'What is this?', ['True:answer', 'False'])
-question = question1 // Set the first question as the active question
-const question2 = createView('Question 2', 'What is that?', ['True', 'False:answer'])
+const question1 = createView(1, 'What is this?', ['True:answer', 'False'])
+const question2 = createView(2, 'What is that?', ['True', 'False:answer'])
+const question3 = createView(3, 'What is the fifth busies airport in the U.S. based on passenger enplanement?', ['JFK:answer', 'LAX', 'ORD', 'ATL'])
+const question4 = createView(4)
 
 // Creating an array with the questions inside
-const questionArray = [question1, question2]
+const questionArray = [question1, question2, question3, question4]
 
-updateView(question)
+$('#questions').append(questionArray)
 
-// Game logic
-questionTime()
+// let [counter, timeout] = startTimer()
+// $('#question').on('click', '.answerOption', function (event) {
+//   stopTimer([counter, timeout])
+//   const classArray = $(this).attr('class').split(' ') // Get an array of classes for the clicked button
+//   console.log(classArray)
+//   if (classArray.includes('answer')) { // Checking if the clicked button is the answer
+//     correct = correct + 1
+//   } else wrong = wrong + 1
+// }
