@@ -1,0 +1,16 @@
+body {
+    background-color: rgb(134, 134, 255);
+}
+
+#trivia {
+    background-color: white;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+button {
+    display: block;
+    margin: auto;
+    margin-bottom: 10px;
+}
