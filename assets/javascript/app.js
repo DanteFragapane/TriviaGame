@@ -76,8 +76,21 @@ const submitForm = function submitForm(inputs, counter, timeout) {
 }
 
 // Show the results of the trivia!
-const displayResults = function displayResults (correct, wrong) {
+const displayResults = function displayResults(correct, wrong) {
+  $('#trivia').html('')
 
+  let resultsDiv = $('<div>')
+  resultsDiv.append($('<h1>', {
+    text: 'Final Scores:'
+  }))
+  resultsDiv.append($('<h3>', {
+    text: 'Correct: ' + correct
+  }))
+  resultsDiv.append($('<h3>', {
+    text: 'Wrong: ' + wrong
+  }))
+
+  $('#trivia').append(resultsDiv)
 }
 // =======================================
 // =======================================
