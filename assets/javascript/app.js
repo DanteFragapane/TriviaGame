@@ -2,7 +2,7 @@
 let correct = 0
 let wrong = 0
 let currentQuestion = 0
-let maxTime = 30 // Maximum amount of seconds given to answer a question
+let maxTime = 60 // Maximum amount of seconds given to answer a question
 let timer = maxTime // Actual timer count
 let submitted = false
 
@@ -56,21 +56,22 @@ const updateTimer = function updateTimer(seconds = timer) {
 }
 
 // Function to handle the submitted form's data
-const submitForm = function submitForm(inputs, counter, timeout) {
+const submitForm = function submitForm(counter, timeout) {
   clearInterval(counter)
   clearTimeout(timeout)
   updateTimer(0)
 
+  let inputs = $('input:checked')
   console.log(inputs)
 
+  // Loop through the inputs and find the inputs with the 'answer' class
   for (let i = 0; i < inputs.length; i++) {
     let answer = $(inputs[i])
     if (answer.attr('class').match(/ answer/g)) {
       correct = correct + 1
-    } else {
-      wrong = wrong + 1
     }
   }
+  wrong = questionArray.length - correct
 
   displayResults(correct, wrong)
 }
@@ -93,24 +94,29 @@ const displayResults = function displayResults(correct, wrong) {
   $('#trivia').append(resultsDiv)
 }
 // =======================================
+
+// =======================================
+// Question Setup
 // =======================================
 
 // Settinng up the questions
 // ``createView`` takes three parameters: a question number, a title, the question, and an array of answer choices, with one needing a ':answer' suffix,
 // to program the answer in
-const question1 = createView(1, 'What is this?', ['True:answer', 'False'])
-const question2 = createView(2, 'What is that?', ['True', 'False:answer'])
+const question1 = createView(1, 'What year did commercial jet service begin?', ['1952:answer', '1953', '1950', '1951'])
+const question2 = createView(2, 'How many engines did the Howard Hughes H‐4 Hercules, a.k.a. The Spruce Goose, have?', ['10', '8:answer', '2', '4'])
 const question3 = createView(3, 'What is the fifth busies airport in the U.S. based on passenger enplanement?', ['JFK:answer', 'LAX', 'ORD', 'ATL'])
 const question4 = createView(4, 'What is the oldest continuous airport in operation in the United States?', ['KCLE', 'CYYZ', 'KCGS:answer'])
 
 // Creating an array with the questions inside
 const questionArray = [question1, question2, question3, question4]
+
+// Creating the form itself and buttons, and appending it to the ``#questions`` div
 const form = $('<form>')
 const submit = $('<button>', {
   id: 'submit',
   text: 'Submit Answers'
 })
-form.append(questionArray, submit)
+form.append(questionArray, $('<br>'), submit)
 $('#questions').append(form)
 
 // =======================================
@@ -125,12 +131,12 @@ let counter = setInterval(function () {
 let timeout = setTimeout(function () {
   clearInterval(counter)
   updateTimer(0)
-  if (!submitted) submitForm()
+  submitForm(counter, timeout)
 }, maxTime * 1000)
 
 // On submitting the form
 $('#questions').on('submit', 'form', function (event) {
   event.preventDefault()
-  let inputs = $('input:checked')
-  submitForm(inputs, counter, timeout)
+  submitForm(counter, timeout)
 })
+// =======================================
