@@ -63,7 +63,21 @@ const submitForm = function submitForm(inputs, counter, timeout) {
 
   console.log(inputs)
 
-  
+  for (let i = 0; i < inputs.length; i++) {
+    let answer = $(inputs[i])
+    if (answer.attr('class').match(/ answer/g)) {
+      correct = correct + 1
+    } else {
+      wrong = wrong + 1
+    }
+  }
+
+  displayResults(correct, wrong)
+}
+
+// Show the results of the trivia!
+const displayResults = function displayResults (correct, wrong) {
+
 }
 // =======================================
 // =======================================
